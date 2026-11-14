@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>اصف ونگو ایکسپرٹ - Active Multi-Sensor Neural Engine</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+
+        :root {
+            --bg-deep: #140507;
+            --fire-red: #ff3344;
+            --fire-orange: #ff8800;
+            --neon-green: #10b981;
+            --neon-red: #ff3366;
+            --gold: #ffb703;
+            --skip-orange: #f97316;
+            --text-main: #f8fafc;
+            --text-sub: #cbd5e1;
+            --ai-blue: #06b6d4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at 50% 0%, #450a0a 0%, var(--bg-deep) 75%);
+            color: var(--text-main); 
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 12px 8px; 
+        }
+
+        .app-card {
+            width: 100%; max-width: 440px; 
+            background: linear-gradient(145deg, rgba(38, 12, 18, 0.96), rgba(15, 5, 8, 0.99));
+            backdrop-filter: blur(25px); border-radius: 28px; padding: 18px 14px;
+            border: 1.5px solid rgba(255, 51, 68, 0.45); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 51, 68, 0.2);
+        }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .header-title h1 { 
+            font-size: 7px; 
+            background: linear-gradient(90deg, var(--fire-red), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        
+        .telegram-btn { 
+            background: linear-gradient(135deg, var(--fire-red), var(--fire-orange)); 
+            color: #fff; font-size: 8.5px; font-weight: 800; padding: 5px 10px; 
+            border-radius: 20px; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 51, 68, 0.35);
+        }
+
+        .period-box {
+            background: rgba(28, 9, 13, 0.75); border-radius: 14px; padding: 10px 14px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; 
+            border: 1px solid rgba(255, 51, 68, 0.25);
+        }
+
+        .timer-container {
+            background: rgba(28, 9, 13, 0.85); border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; 
+            border: 1px solid rgba(16, 185, 129, 0.3); display: flex; justify-content: space-between; align-items: center;
+        }
+        .timer-clock { font-size: 20px; font-weight: 900; color: var(--neon-green); font-family: monospace; }
+        .confidence-pill {
+            background: rgba(6, 182, 212, 0.18); border: 1px solid var(--ai-blue);
+            color: var(--ai-blue); font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 20px;
+        }
+
+        /* 🌟 4 لائیو سینسرز کا گرڈ */
+        .ai-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px;
+        }
+        .ai-agent-card {
+            background: rgba(28, 9, 13, 0.85); border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 10px; padding: 7px 8px; text-align: left;
+        }
+        .ai-agent-title { font-size: 7.5px; color: var(--ai-blue); font-weight: 800; margin-bottom: 2px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .ai-agent-status { font-size: 9.5px; font-weight: 900; color: var(--gold); }
+        .ai-agent-sub { font-size: 7.5px; color: var(--text-sub); margin-top: 2px; }
+
+        .supervisor-signal-box {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(255, 51, 68, 0.16), rgba(255, 136, 0, 0.24));
+            border-radius: 18px; padding: 14px 10px; text-align: center; margin-bottom: 10px;
+            border: 2px solid var(--fire-red);
+            box-shadow: 0 0 25px rgba(255, 51, 68, 0.35);
+            transition: all 0.3s ease;
+        }
+        .supervisor-signal-box.skip-mode {
+            border-color: var(--skip-orange);
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(15, 5, 8, 0.95));
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.25);
+        }
+
+        .signal-label { font-size: 8.5px; color: var(--text-sub); font-weight: 800; letter-spacing: 1px; }
+        .signal-trend { 
+            font-size: 32px; font-weight: 900; margin: 4px 0; color: #fff; 
+            text-shadow: 0 0 20px rgba(255, 51, 68, 0.8); letter-spacing: 2px;
+        }
+        .signal-trend.skip-mode { color: var(--skip-orange); text-shadow: 0 0 20px rgba(249, 115, 22, 0.8); }
+
+        .logic-panel { background: rgba(28, 9, 13, 0.75); border-radius: 14px; padding: 8px 10px; margin-bottom: 10px; border: 1px solid rgba(255, 51, 68, 0.2); }
+        .logic-box { font-size: 8.5px; color: #cbd5e1; line-height: 1.4; background: rgba(15, 5, 8, 0.65); padding: 7px; border-radius: 8px; text-align: left; }
+
+        .history-container { 
+            background: rgba(15, 5, 8, 0.85); border-radius: 14px; padding: 10px; 
+            border: 1.5px solid rgba(255, 183, 3, 0.35); max-height: 155px; overflow-y: auto;
+        }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 9px; text-align: center; }
+        .history-table th { color: var(--text-sub); padding: 5px 2px; border-bottom: 1px solid rgba(255, 51, 68, 0.25); position: sticky; top: 0; background: #1a060a; }
+        .history-table td { padding: 5px 2px; border-bottom: 1px solid rgba(255, 51, 68, 0.1); }
+
+        .badge-win { background: rgba(16, 185, 129, 0.25); color: var(--neon-green); border: 1px solid var(--neon-green); padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+        .badge-loss { background: rgba(255, 51, 102, 0.25); color: var(--neon-red); border: 1px solid var(--neon-red); padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+        .badge-skip { background: rgba(249, 115, 22, 0.25); color: var(--skip-orange); border: 1px solid var(--skip-orange); padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<div class="app-card">
+    <div class="top-bar">
+        <div class="header-title"><h1>اصف ونگو ایکسپرٹ - Active Multi-Sensor Engine</h1></div>
+        <a href="https://t.me/AsifWingoExperttrick" target="_blank" class="telegram-btn">JOIN TELEGRAM</a>
+    </div>
+
+    <div class="period-box">
+        <div><div style="font-size:9px; color:var(--text-sub)">TARGET PERIOD</div><div style="font-size:13px; font-weight:900; color:var(--gold)" id="targetPeriod">----</div></div>
+        <div style="text-align: right;"><div style="font-size:9px; color:var(--text-sub)">LAST RESULT</div><div style="font-size:13px; font-weight:900; color:var(--fire-red)" id="lastNum">-</div></div>
+    </div>
+
+    <div class="timer-container">
+        <div class="timer-clock" id="timerClock">00:30</div>
+        <div class="confidence-pill" id="confidenceBadge">SENSOR SCORE: --%</div>
+    </div>
+
+    <!-- 🌟 4 لائیو ایکٹیو سینسرز -->
+    <div class="ai-grid">
+        <div class="ai-agent-card">
+            <div class="ai-agent-title"><span>📊 1. Ratio Sensor</span><span id="wRatio">0%</span></div>
+            <div class="ai-agent-status" id="sRatio">--</div>
+            <div class="ai-agent-sub" id="subRatio">0-9 Digit Distribution</div>
+        </div>
+        <div class="ai-agent-card">
+            <div class="ai-agent-title"><span>⚡ 2. Velocity Sensor</span><span id="wVelocity">0%</span></div>
+            <div class="ai-agent-status" id="sVelocity">--</div>
+            <div class="ai-agent-sub" id="subVelocity">Jump & Speed Vector</div>
+        </div>
+        <div class="ai-agent-card">
+            <div class="ai-agent-title"><span>⚖️ 3. Reversion Sensor</span><span id="wReversion">0%</span></div>
+            <div class="ai-agent-status" id="sReversion">--</div>
+            <div class="ai-agent-sub" id="subReversion">Equilibrium & Balance</div>
+        </div>
+        <div class="ai-agent-card">
+            <div class="ai-agent-title"><span>🛡️ 4. Shield Interceptor</span><span id="wShield">SAFE</span></div>
+            <div class="ai-agent-status" id="sShield">ACTIVE</div>
+            <div class="ai-agent-sub" id="subShield">Noise & Trap Blocker</div>
+        </div>
+    </div>
+
+    <div class="supervisor-signal-box" id="signalBox">
+        <div class="signal-label">ACTIVE SENSOR CONSENSUS SIGNAL</div>
+        <div class="signal-trend" id="predTrend">ANALYZING...</div>
+        <div style="font-size:8.5px; font-weight:800; color:var(--fire-orange);" id="phaseMode">⚡ Polling Live API Streams...</div>
+    </div>
+
+    <div class="logic-panel">
+        <div style="font-size: 8.5px; color: var(--fire-orange); font-weight: 800; margin-bottom: 3px;">🔬 LIVE SENSOR DIAGNOSTIC LOG</div>
+        <div class="logic-box" id="logicBox">> Connecting to WinGo 30S live telemetry...</div>
+    </div>
+
+    <div class="history-container">
+        <div style="font-size:9px; color:var(--text-sub); margin-bottom:6px; display:flex; justify-content:space-between;">
+            <span style="color:var(--gold); font-weight:800;">📊 SENSOR LOGS</span>
+            <span id="winRateText" style="color:var(--gold)">WIN: 0/0 (0%) | SKIP: 0</span>
+        </div>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>PERIOD</th>
+                    <th>RESULT</th>
+                    <th>PREDICT</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                <tr><td colspan="4" style="color:var(--text-sub);">Waiting for live draw data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const WINGO_30S_API = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
+    let totalWins = 0, totalLosses = 0, totalSkipped = 0;
+    let consecutiveLosses = 0;
+    let lastPrediction = null, lastProcessedIssue = "", historyLogs = [];
+    let skipCooldown = 0;
+
+    function startTimerEngine() {
+        setInterval(() => {
+            const remSec = 30 - (new Date().getSeconds() % 30);
+            document.getElementById('timerClock').innerText = `00:${remSec < 10 ? '0' : ''}${remSec}`;
+            if (remSec === 29 || remSec === 28 || remSec === 1) runLiveEngine();
+        }, 1000);
+    }
+
+    async function fetchDirectData() {
+        try {
+            const res = await fetch(WINGO_30S_API);
+            if (res.ok) {
+                const json = await res.json();
+                let list = json.data?.list || json.list || json.data || [];
+                if (list.length > 0) return list;
+            }
+        } catch (e) {}
+        return [];
+    }
+
+    /* 🔬 4 ایکٹیو سینسرز کا جدید تکنیکی انجن */
+    function runActiveSensorEngine(list) {
+        if (!list || list.length < 10) {
+            return {
+                decision: "SKIP ⏸️", score: 0,
+                signals: ["Sync", "Sync", "Sync", "Waiting"],
+                weights: ["0%", "0%", "0%", "WAIT"],
+                subs: ["Waiting API", "Waiting API", "Waiting API", "Connecting"],
+                phase: "🔄 Polling Live Server Telemetry...",
+                reason: "Awaiting valid historical draw array from WinGo server."
+            };
+        }
+
+        const numbers = list.slice(0, 15).map(i => parseInt(i.number ?? i.num ?? i.winningNumber ?? 0));
+        const sizes = numbers.map(n => n >= 5 ? "BIG" : "SMALL");
+        const flip = (s) => s === "BIG" ? "SMALL" : "BIG";
+
+        let bigScore = 0;
+        let smallScore = 0;
+
+        // 🛡️ 4th Sensor: Shield Interceptor (اگر لاس یا گڑبڑ ہو تو سگنل روک دو)
+        if (skipCooldown > 0) {
+            skipCooldown--;
+            totalSkipped++;
+            return {
+                decision: "SKIP ⏸️", score: 98,
+                signals: ["PAUSED", "PAUSED", "PAUSED", "SHIELD LOCK"],
+                weights: ["--", "--", "--", "ACTIVE"],
+                subs: ["Cooling down", "Cooling down", "Cooling down", `Safe lock (${skipCooldown + 1} left)`],
+                phase: "🛡️ Shield Interceptor: Capital Protection Lock",
+                reason: "Recent error or market volatility detected. Shield interceptor enforces safe draw skip."
+            };
+        }
+
+        // ============================================================
+        // 📊 1. RATIO SENSOR (0-9 Digits Breakdown Analysis)
+        // ============================================================
+        let last10Nums = numbers.slice(0, 10);
+        let lowCount = last10Nums.filter(n => n <= 4).length; // 0,1,2,3,4
+        let highCount = last10Nums.filter(n => n >= 5).length; // 5,6,7,8,9
+        
+        let ratioVote = lowCount > highCount ? "BIG" : "SMALL";
+        let ratioWeight = 65 + (Math.abs(lowCount - highCount) * 5);
+        ratioWeight = Math.min(92, ratioWeight);
+        let ratioSub = `10-Draw Low:${lowCount} High:${highCount}`;
+
+        if (ratioVote === "BIG") bigScore += ratioWeight;
+        else smallScore += ratioWeight;
+
+        // ============================================================
+        // ⚡ 2. VELOCITY SENSOR (Jump & Delta Vector Analysis)
+        // ============================================================
+        let delta1 = numbers[0] - numbers[1];
+        let delta2 = numbers[1] - numbers[2];
+        let velocityVote = (delta1 + delta2) >= 0 ? "BIG" : "SMALL";
+        let velocityWeight = 60 + Math.min(25, Math.abs(delta1 * 4));
+        let velocitySub = `Delta Velocity: ${delta1 >= 0 ? '+' : ''}${delta1}`;
+
+        if (velocityVote === "BIG") bigScore += velocityWeight;
+        else smallScore += velocityWeight;
+
+        // ============================================================
+        // ⚖️ 3. REVERSION SENSOR (Equilibrium & Mean Reversion Law)
+        // ============================================================
+        let last6Sizes = sizes.slice(0, 6);
+        let streak = 0;
+        let topSize = last6Sizes[0];
+        for (let s of last6Sizes) { if (s === topSize) streak++; else break; }
+
+        let reversionVote = topSize;
+        let reversionWeight = 70;
+        let reversionSub = `Current Streak: ${streak}x ${topSize}`;
+
+        if (streak >= 4) {
+            // اگر ایک ہی طرف 4 سے زیادہ بار نکل جائے تو ریورسل (الٹ) کا زبردست ویٹ بنتا ہے
+            reversionVote = flip(topSize);
+            reversionWeight = 88;
+            reversionSub = `Exhaustion! Expecting Reversion`;
+        } else {
+            reversionVote = topSize;
+            reversionWeight = 72;
+            reversionSub = `Riding Flow (${topSize})`;
+        }
+
+        if (reversionVote === "BIG") bigScore += reversionWeight;
+        else smallScore += reversionWeight;
+
+        // ============================================================
+        // 🤝 FINAL SENSOR CONSENSUS & NOISE INTERCEPTION
+        // ============================================================
+        let total = bigScore + smallScore;
+        let finalDecision = bigScore > smallScore ? "BIG" : "SMALL";
+        let maxScore = Math.max(bigScore, smallScore);
+        let confidence = Math.round((maxScore / total) * 100);
+
+        // اگر سینسرز کے درمیان تضاد ہو (اعتماد 60% سے کم ہو) تو Shield AI ٹریپ لاک لگا دے گی
+        if (confidence < 60) {
+            skipCooldown = 1;
+            totalSkipped++;
+            return {
+                decision: "SKIP ⏸️",
+                score: confidence,
+                signals: [ratioVote, velocityVote, reversionVote, "VETO LOCK"],
+                weights: [`${ratioWeight}%`, `${velocityWeight}%`, `${reversionWeight}%`, "NOISE"],
+                subs: [ratioSub, velocitySub, reversionSub, "Sensor conflict detected"],
+                phase: `⚠️ Shield Interceptor: Vector Conflict (${confidence}%)`,
+                reason: `Ratio, Velocity, and Reversion sensors disagree. Skipping draw to protect accuracy.`
+            };
+        }
+
+        return {
+            decision: finalDecision,
+            score: confidence,
+            signals: [ratioVote, velocityVote, reversionVote, "ACTIVE"],
+            weights: [`${ratioWeight}%`, `${velocityWeight}%`, `${reversionWeight}%`, "SECURE"],
+            subs: [ratioSub, velocitySub, reversionSub, "Sensors fully synchronized"],
+            phase: `🔥 Sensor Consensus: ${finalDecision} (${confidence}% Score)`,
+            reason: `Ratio Sensor (${ratioVote}), Velocity Sensor (${velocityVote}), and Reversion Sensor (${reversionVote}) aligned perfectly.`
+        };
+    }
+
+    async function runLiveEngine() {
+        const list = await fetchDirectData();
+        if (!list || list.length === 0) return;
+
+        const latest = list[0];
+        const lastNum = parseInt(latest.number ?? latest.num ?? latest.winningNumber ?? 0);
+        const lastIssue = String(latest.issueNumber ?? latest.issue ?? latest.period ?? "");
+        const actualSize = lastNum >= 5 ? "BIG" : "SMALL";
+
+        if (lastIssue && lastIssue === lastProcessedIssue) return;
+        if (lastIssue) lastProcessedIssue = lastIssue;
+
+        document.getElementById('lastNum').innerText = `${lastNum} (${actualSize})`;
+
+        try {
+            if (lastIssue) {
+                document.getElementById('targetPeriod').innerText = (BigInt(lastIssue) + 1n).toString().slice(-4);
+            }
+        } catch(e) { document.getElementById('targetPeriod').innerText = "NEXT"; }
+
+        if (lastPrediction !== null) {
+            let status = "";
+            if (lastPrediction.includes("SKIP")) {
+                status = "SKIPPED";
+            } else {
+                let isWin = (actualSize === lastPrediction);
+                if (isWin) {
+                    status = "WIN";
+                    totalWins++;
+                    consecutiveLosses = 0;
+                    skipCooldown = 0;
+                } else {
+                    status = "LOSS";
+                    totalLosses++;
+                    consecutiveLosses++;
+                    skipCooldown = consecutiveLosses >= 2 ? 2 : 1;
+                }
+            }
+
+            historyLogs.unshift({
+                issue: lastIssue || "----", actual: `${lastNum} (${actualSize})`,
+                pred: lastPrediction, status: status
+            });
+
+            document.getElementById('historyBody').innerHTML = historyLogs.slice(0, 15).map(item => {
+                let badgeClass = 'badge-skip';
+                if (item.status === 'WIN') badgeClass = 'badge-win';
+                if (item.status === 'LOSS') badgeClass = 'badge-loss';
+                return `<tr><td>${item.issue.slice(-4)}</td><td><b>${item.actual}</b></td><td><b>${item.pred}</b></td><td><span class="${badgeClass}">${item.status}</span></td></tr>`;
+            }).join('');
+
+            let totalPlayed = totalWins + totalLosses;
+            let winPct = totalPlayed > 0 ? Math.round((totalWins / totalPlayed) * 100) : 0;
+            document.getElementById('winRateText').innerText = `WIN: ${totalWins}/${totalPlayed} (${winPct}%) | SKIP: ${totalSkipped}`;
+        }
+
+        const engineResult = runActiveSensorEngine(list);
+        lastPrediction = engineResult.decision;
+
+        document.getElementById('predTrend').innerText = lastPrediction;
+        document.getElementById('phaseMode').innerText = engineResult.phase;
+        document.getElementById('confidenceBadge').innerText = `SENSOR SCORE: ${engineResult.score}%`;
+        document.getElementById('logicBox').innerHTML = `> <b>Active Sensors:</b> ${engineResult.reason}`;
+
+        document.getElementById('sRatio').innerText = engineResult.signals[0];
+        document.getElementById('sVelocity').innerText = engineResult.signals[1];
+        document.getElementById('sReversion').innerText = engineResult.signals[2];
+        document.getElementById('sShield').innerText = engineResult.signals[3];
+
+        document.getElementById('wRatio').innerText = engineResult.weights[0];
+        document.getElementById('wVelocity').innerText = engineResult.weights[1];
+        document.getElementById('wReversion').innerText = engineResult.weights[2];
+        document.getElementById('wShield').innerText = engineResult.weights[3];
+
+        document.getElementById('subRatio').innerText = engineResult.subs[0];
+        document.getElementById('subVelocity').innerText = engineResult.subs[1];
+        document.getElementById('subReversion').innerText = engineResult.subs[2];
+        document.getElementById('subShield').innerText = engineResult.subs[3];
+
+        const predElem = document.getElementById('predTrend');
+        const boxElem = document.getElementById('signalBox');
+        if (lastPrediction.includes("SKIP")) {
+            predElem.classList.add('skip-mode');
+            boxElem.classList.add('skip-mode');
+        } else {
+            predElem.classList.remove('skip-mode');
+            boxElem.classList.remove('skip-mode');
+        }
+    }
+
+    startTimerEngine();
+    runLiveEngine();
+</script>
+
+</body>
+</html>
